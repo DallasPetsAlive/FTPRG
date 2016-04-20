@@ -3,6 +3,7 @@ import os
 import zipfile
 import json
 import ConfigParser
+from RGAnimal import RGAnimal
 
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
@@ -37,4 +38,5 @@ for fileNum in range(len(files)):
 with open(os.path.join(unzipPath, 'QltdwQc9_pets_1.json'), 'r') as dataFile:
     for line in dataFile:
         jsonData = json.loads(line)
-        print jsonData
+        animal = RGAnimal()
+        animal.parseJSON(jsonData)

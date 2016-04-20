@@ -16,3 +16,5 @@ config.ini
 .idea/vcs.xml
 
 .idea/workspace.xml
+
+*.pyc
