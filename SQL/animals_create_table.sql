@@ -1,7 +1,7 @@
 CREATE TABLE `animals` (
   `animalID` int(11) NOT NULL,
   `orgID` int(11) DEFAULT NULL,
-  `lastUpdate` varchar(45) DEFAULT NULL,
+  `lastUpdated` varchar(45) DEFAULT NULL,
   `rescueID` varchar(50) DEFAULT NULL,
   `name` varchar(250) DEFAULT NULL,
   `species` varchar(45) DEFAULT NULL,
