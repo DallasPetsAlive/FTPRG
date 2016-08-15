@@ -23,159 +23,179 @@ updatedpetsFilename = config.get('files', 'updatedpets')
 unzipPath = os.path.join(currentPath, 'RGFilesUnzipped')
 
 
-if False:
-	print "RUNNING ORGS"
-	
-	# Orgs import
-	orgsJSON = []
-	with open(os.path.join(unzipPath, orgsFilename), 'r') as orgFile:
-		for org in orgFile:
-			orgsJSON.append(json.loads(org))
-			
+# Orgs import
+orgsData = []
+with open(os.path.join(unzipPath, orgsFilename), 'r') as orgFile:
+    for org in orgFile:
+        temp = json.loads(org)
+        if 'orgID' in temp:  
+	        orgsData.append((
+				temp["orgID"],
+				temp['status'],
+				temp['name'],
+				temp['address'],
+				temp['city'],
+				temp['state'],
+				temp['zip'],
+				temp['country'],
+				temp['phone'],
+				temp['fax'],
+				temp['email'],
+				temp['orgurl'],
+				temp['facebookUrl'],        
+				temp['orgType'],
+				temp['orgSpecies'],        
+				temp['serveAreas'],                
+				temp['about'],
+				temp['meetPets'],
+				temp['services'],
+				temp['allowAppSubmissions'],
+				temp['messageOrg']    
+			))
+        
 
-	insertOrg = ("INSERT INTO `orgs` (`orgID`, `status`, `name`, `address`, `city`, `state`, `zip`, `country`, `phone`, `fax`, `email`, `orgurl`, `facebookUrl`, `orgType`, `orgSpecies`, `serveAreas`, `about`, `meetPets`, `services`, `allowAppSubmissions`, `messageOrg`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s);")
-
-	cnx = mysql.connector.connect(user=username, password=password, host=host, database=database)
-	curA = cnx.cursor(buffered=True)
-	curA.execute(insertOrg,(orgsJSON[1]["orgID"], 
-							orgsJSON[1]["status"], 
-							orgsJSON[1]["name"], 
-							orgsJSON[1]["address"], 
-							orgsJSON[1]["city"], 
-							orgsJSON[1]["state"], 
-							orgsJSON[1]["zip"], 
-							orgsJSON[1]["country"], 
-							orgsJSON[1]["phone"], 
-							orgsJSON[1]["fax"], 
-							orgsJSON[1]["email"], 
-							orgsJSON[1]["orgurl"], 
-							orgsJSON[1]["facebookUrl"], 
-							orgsJSON[1]["orgType"], 
-							orgsJSON[1]["orgSpecies"], 
-							orgsJSON[1]["serveAreas"], 
-							orgsJSON[1]["about"], 
-							orgsJSON[1]["meetPets"], 
-							orgsJSON[1]["services"], 
-							orgsJSON[1]["allowAppSubmissions"], 
-							orgsJSON[1]["messageOrg"]))
-	cnx.commit()
-	cnx.close()
-
-
-# Pets import
-petsJSON = []	
-with open(os.path.join(unzipPath, petsFilename), 'r') as dataFile:
-    for line in dataFile:
-		petsJSON.append(json.loads(line))        
-
-
-# SDP
-# this is returning 0 objects, and I don't know why     
-# open the object as a file
-# for each line, json.loads   
-
-insertPet = ("INSERT INTO `animals` (`animalID`, `orgID`, `lastUpdated`, `rescueID`, `name`, `species`, `breed`, `primaryBreed`, `secondaryBreed`, `sex`, `mixed`, `dogs`, `cats`, `kids`, `declawed`, `housetrained`, `age`, `birthdate`, `specialneeds`, `altered`, `size`, `sizecurrent`, `sizepotential`, `sizeuom`, `uptodate`, `color`, `coatlength`, `pattern`, `courtesy`, `found`, `founddate`, `foundzipcode`, `animallocation`, `killdate`, `killreason`, `needsfoster`, `adoptionfee`, `description`, `descriptionplain`, `okwithadults`, `obediencetraining`, `ownerexperience`, `exerciseneeds`, `energylevel`, `groomingneeds`, `yardrequired`, `fence`, `shedding`, `newpeople`, `vocal`, `activitylevel`, `eartype`, `eyecolor`, `tailtype`, `olderkidsonly`, `nosmalldogs`, `nolargedogs`, `nofemaledogs`, `nomaledogs`, `okforseniors`, `hypoallergenic`, `goodincar`, `leashtrained`, `cratetrained`, `fetches`, `playstoys`, `swims`, `lap`, `okwithfarmanimals`, `drools`, `apartment`, `noheat`, `nocold`, `protective`, `escapes`, `predatory`, `hasallergies`, `specialdiet`, `ongoingmedical`, `hearingimpaired`, `obedient`, `playful`, `timid`, `skittish`, `independent`, `affectionate`, `eagertoplease`, `intelligent`, `eventempered`, `gentle`, `goofy`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
+insertOrg = ("INSERT INTO `orgs` (`orgID`, `status`, `name`, `address`, `city`, `state`, `zip`, `country`, `phone`, `fax`, `email`, `orgurl`, `facebookUrl`, `orgType`, `orgSpecies`, `serveAreas`, `about`, `meetPets`, `services`, `allowAppSubmissions`, `messageOrg`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s);")
 
 cnx = mysql.connector.connect(user=username, password=password, host=host, database=database)
 curA = cnx.cursor(buffered=True)
 
-for pet in petsJSON:
-	curA.execute(insertPet,(pet["animalID"], 						 #91
-						pet["orgID"], 
-						pet["lastUpdated"], 
-						pet["rescueID"], 
-						pet["name"], 
-						pet["species"], 
-						pet["breed"], 
-						pet["primaryBreed"], 
-						pet["secondaryBreed"], 
-						pet["sex"], 
-						pet["mixed"], 
-						pet["dogs"], 
-						pet["cats"], 
-						pet["kids"], 
-						pet["declawed"], 
-						pet["housetrained"], 
-						pet["age"], 
-						pet["birthdate"], 
-						pet["specialNeeds"], 
-						pet["altered"], 
-						pet["size"], 
-						pet["sizeCurrent"], 
-						pet["sizePotential"], 
-						pet["sizeUOM"], 
-						pet["uptodate"], 
-						pet["color"], 
-						pet["coatLength"], 
-						pet["pattern"], 
-						pet["courtesy"], 
-						pet["found"], 
-						pet["foundDate"], 
-						pet["foundZipcode"], 
-						pet["animalLocation"], 
-						pet["killDate"], 
-						pet["killReason"], 
-						pet["needsFoster"], 
-						pet["adoptionFee"], 
-						pet["description"], 
-						pet["descriptionPlain"], 
-						pet["oKWithAdults"], 
-						pet["obedienceTraining"], 
-						pet["ownerExperience"], 
-						pet["exerciseNeeds"], 
-						pet["energyLevel"], 
-						pet["groomingNeeds"], 
-						pet["yardRequired"], 
-						pet["fence"], 
-						pet["shedding"], 
-						pet["newPeople"], 
-						pet["vocal"], 
-						pet["activityLevel"], 
-						pet["earType"], 
-						pet["eyeColor"], 
-						pet["tailType"], 
-						pet["olderKidsOnly"], 
-						pet["noSmallDogs"], 
-						pet["noLargeDogs"], 
-						pet["noFemaleDogs"], 
-						pet["noMaleDogs"], 
-						pet["oKForSeniors"], 
-						pet["hypoallergenic"], 
-						pet["goodInCar"], 
-						pet["leashtrained"], 
-						pet["cratetrained"], 
-						pet["fetches"], 
-						pet["playsToys"], 
-						pet["swims"], 
-						pet["lap"], 
-						pet["oKWithFarmAnimals"], 
-						pet["drools"], 
-						pet["apartment"], 
-						pet["noHeat"], 
-						pet["noCold"], 
-						pet["protective"], 
-						pet["escapes"], 
-						pet["predatory"], 
-						pet["hasAllergies"], 
-						pet["specialDiet"], 
-						pet["ongoingMedical"], 
-						pet["hearingImpaired"], 
-						pet["obedient"], 
-						pet["playful"], 
-						pet["timid"], 
-						pet["skittish"], 
-						pet["independent"], 
-						pet["affectionate"], 
-						pet["eagerToPlease"], 
-						pet["intelligent"], 
-						pet["eventempered"], 
-						pet["gentle"], 
-						pet["goofy"]))
-						
-cnx.commit()
+try:
+    curA.executemany(insertOrg, orgsData)
+    cnx.commit()
+    
+except Exception,e:
+    print str(e)
+	cnx.rollback()
+
+
+# Pets import
+petsData = []
+with open(os.path.join(unzipPath, petsFilename), 'r') as petFile:
+	for pet in petFile:	    
+		temp = json.loads(pet)		
+		petsData.append((
+			temp["animalID"],                          
+			temp["orgID"], 
+			temp["lastUpdated"], 
+			temp["rescueID"], 
+			temp["name"], 
+			temp["species"], 
+			temp["breed"], 
+			temp["primaryBreed"], 
+			temp["secondaryBreed"], 
+			temp["sex"], 
+			temp["mixed"], 
+			temp["dogs"], 
+			temp["cats"], 
+			temp["kids"], 
+			temp["declawed"], 
+			temp["housetrained"], 
+			temp["age"], 
+			temp["birthdate"], 
+			temp["specialNeeds"], 
+			temp["altered"], 
+			temp["size"], 
+			temp["sizeCurrent"], 
+			temp["sizePotential"], 
+			temp["sizeUOM"], 
+			temp["uptodate"], 
+			temp["color"], 
+			temp["coatLength"], 
+			temp["pattern"], 
+			temp["courtesy"], 
+			temp["found"], 
+			temp["foundDate"], 
+			temp["foundZipcode"], 
+			temp["animalLocation"], 
+			temp["killDate"], 
+			temp["killReason"], 
+			temp["needsFoster"], 
+			temp["adoptionFee"], 
+			temp["description"], 
+			temp["descriptionPlain"], 
+			temp["oKWithAdults"], #40
+			temp["obedienceTraining"], 
+			temp["ownerExperience"], 
+			temp["exerciseNeeds"], 
+			temp["energyLevel"], 
+			temp["groomingNeeds"], 
+			temp["yardRequired"], 
+			temp["fence"], 
+			temp["shedding"], 
+			temp["newPeople"], 
+			temp["vocal"], 
+			temp["activityLevel"], 
+			temp["earType"], 
+			temp["eyeColor"], 
+			temp["tailType"], 
+			temp["olderKidsOnly"], 
+			temp["noSmallDogs"], 
+			temp["noLargeDogs"], 
+			temp["noFemaleDogs"], 
+			temp["noMaleDogs"], 
+			temp["oKForSeniors"], 
+			temp["hypoallergenic"], 
+			temp["goodInCar"], 
+			temp["leashtrained"], 
+			temp["cratetrained"], 
+			temp["fetches"], 
+			temp["playsToys"], 
+			temp["swims"], 
+			temp["lap"], 
+			temp["oKWithFarmAnimals"], 
+			temp["drools"], #70
+			temp["apartment"], 
+			temp["noHeat"], 
+			temp["noCold"], 
+			temp["protective"], 
+			temp["escapes"], 
+			temp["predatory"], 
+			temp["hasAllergies"], 
+			temp["specialDiet"], 
+			temp["ongoingMedical"], 
+			temp["hearingImpaired"], 
+			temp["obedient"], 
+			temp["playful"], 
+			temp["timid"], 
+			temp["skittish"], 
+			temp["independent"], 
+			temp["affectionate"], 
+			temp["eagerToPlease"], 
+			temp["intelligent"], 
+			temp["eventempered"], 
+			temp["gentle"], 
+			temp["goofy"]      
+		))
+
+
+insertPet = ("INSERT INTO `animals` (`animalID`, `orgID`, `lastUpdated`, `rescueID`, `name`, `species`, `breed`, `primaryBreed`, `secondaryBreed`, `sex`, `mixed`, `dogs`, `cats`, `kids`, `declawed`, `houseTrained`, `age`, `birthdate`, `specialNeeds`, `altered`, `size`, `sizeCurrent`, `sizePotential`, `sizeUOM`, `upToDate`, `color`, `coatLength`, `pattern`, `courtesy`, `found`, `foundDate`, `foundZipCode`, `animalLocation`, `killDate`, `killReason`, `needsFoster`, `adoptionFee`, `description`, `descriptionPlain`, `oKWithAdults`, `obedienceTraining`, `ownerExperience`, `exerciseNeeds`, `energyLevel`, `groomingNeeds`, `yardRequired`, `fence`, `shedding`, `newPeople`, `vocal`, `activityLevel`, `earType`, `eyeColor`, `tailType`, `olderKidsOnly`, `noSmallDogs`, `noLargeDogs`, `noFemaleDogs`, `noMaleDogs`, `oKForSeniors`, `hypoallergenic`, `goodInCar`, `leashtrained`, `cratetrained`, `fetches`, `playsToys`, `swims`, `lap`, `oKWithFarmAnimals`, `drools`, `apartment`, `noHeat`, `noCold`, `protective`, `escapes`, `predatory`, `hasAllergies`, `specialDiet`, `ongoingMedical`, `hearingImpaired`, `obedient`, `playful`, `timid`, `skittish`, `independent`, `affectionate`, `eagerToPlease`, `intelligent`, `eventempered`, `gentle`, `goofy`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
+
+
+try:
+    curA.executemany(insertOrg, orgsData)
+    cnx.commit()
+    
+except Exception,e:
+    print str(e)
+	cnx.rollback()
+    
+
 cnx.close()
 
 
+
+# TODO
+
+# Perform daily updates of the data
+# On a daily basis, download the adoptable pet data from your API key's FTP account.  Process the updated data.
+# Process the data for each pet in the updatedpets_n.json files.
+# Add the pets that are in the newpets_n.json files.
+# Delete any pets (by animalID) that are not listed in the petlist.csv file.
+
+
+
+# Perform regular scrubs of the data
+# On a regular basis (e.g., weekly or monthly), perform a full refresh of data from the orgs_n.json and pets_n.json data files.
 
 
 
